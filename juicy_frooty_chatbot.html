@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Juicy-Frooty Chatbot</title>
+  <style>
+    :root{--bg:#f7fff6;--card:#ffffff;--accent:#ff6b6b;--muted:#666}
+    body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); margin:0; padding:24px; color:#0f172a}
+    .container{max-width:900px;margin:24px auto;padding:24px;background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.9));border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,0.08)}
+    header{display:flex;align-items:center;gap:16px}
+    .logo{width:64px;height:64px;border-radius:12px;background:radial-gradient(circle at 30% 20%, #fff 0%, #ffecec 20%, #ffd1d1 60%, #ff6b6b 100%);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+    h1{margin:0;font-size:1.5rem}
+    p.lead{margin:8px 0 18px;color:var(--muted)}
+    .card{background:var(--card);padding:18px;border-radius:10px;box-shadow:0 4px 16px rgba(15,23,42,0.04)}
+    .note{font-size:0.9rem;color:var(--muted);margin-top:8px}
+    .controls{display:flex;gap:10px;margin-top:12px}
+    .btn{padding:10px 14px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+    .btn.secondary{background:#fff;color:var(--accent);border:1px solid #ffdede}
+    footer{margin-top:18px;font-size:0.85rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">JF</div>
+      <div>
+        <h1>Juicy‑Frooty — Chatbot Embed</h1>
+        <p class="lead">This page embeds your Watson Assistant web chat integration. The chat widget will load and render automatically.</p>
+      </div>
+    </header>
+
+    <div class="card">
+      <h3>How it works</h3>
+      <p class="note">The Watson Assistant script (provided by you) is included below and will initialize the chat using the specified <code>integrationID</code>, <code>region</code>, and <code>serviceInstanceID</code>. When the page loads, the chat widget will be inserted by the Watson script.</p>
+
+      <div style="margin-top:12px;">
+        <strong>Controls</strong>
+        <div class="controls">
+          <button class="btn" id="openChat">Open Chat</button>
+          <button class="btn secondary" id="hideChat">Hide Chat</button>
+        </div>
+      </div>
+
+      <p class="note">If the chat does not appear, check the browser console for errors or verify that the integration credentials are correct and that the Watson Assistant service is active.</p>
+    </div>
+
+    <footer>
+      Need changes (style, position, auto-open behavior)? Reply and I’ll update the page.
+    </footer>
+  </div>
+
+  <!-- Watson Assistant web chat embed (as provided) -->
+  <script>
+    window.watsonAssistantChatOptions = {
+      integrationID: "1d767328-b765-443b-b473-a953371fb7c2", // The ID of this integration.
+      region: "eu-de", // The region your integration is hosted in.
+      serviceInstanceID: "33c75752-cbd8-48cb-b882-2719a64887e0", // The ID of your service instance.
+      onLoad: async (instance) => { await instance.render(); window._watsonInstance = instance; }
+    };
+    setTimeout(function(){
+      const t=document.createElement('script');
+      t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+      document.head.appendChild(t);
+    });
+  </script>
+
+  <script>
+    // Small helpers to open/hide the chat programmatically
+    document.getElementById('openChat').addEventListener('click', async () => {
+      try{
+        if(window._watsonInstance){ await window._watsonInstance.openWindow(); }
+        else console.info('Assistant not loaded yet — it will open when ready.');
+      }catch(e){ console.error(e); }
+    });
+
+    document.getElementById('hideChat').addEventListener('click', async () => {
+      try{
+        if(window._watsonInstance){ await window._watsonInstance.closeWindow(); }
+      }catch(e){ console.error(e); }
+    });
+  </script>
+</body>
+</html>
